@@ -19,7 +19,7 @@ jobs:
         with:
           images: azizhamza/githuba
           tags : |
-            type=ref,event=branch
+            type=raw,value=foo
 
       -
         name: Login to DockerHub
