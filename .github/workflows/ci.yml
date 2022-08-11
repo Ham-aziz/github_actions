@@ -19,7 +19,6 @@ jobs:
         with:
           images: azizhamza/githuba
           tags : |
-            type=raw,value=foo
             type=sha
       -
         name: Login to DockerHub
@@ -34,3 +33,23 @@ jobs:
           context: .
           push: true
           tags: ${{ steps.meta.outputs.tags }}
+
+      - name: build, push and Tag docker image with the SHA and develop if it is the master branche
+        if: ${{ github.ref_name == 'master' }}
+        uses: docker/build-push-action@v3
+        with:
+            context: .
+            push: true
+            tags: |
+              ${{ steps.meta.outputs.tags }}, azizhamza/githuba:develop
+
+
+      - name: build with args, push and Tag docker image with the SHA and latest if it is the production branche 
+        if: ${{ github.ref_name == 'production' }}
+        env:
+          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        uses: docker/build-push-action@v3
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}, azizhamza/githuba:latest
