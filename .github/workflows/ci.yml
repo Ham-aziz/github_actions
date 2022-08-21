@@ -15,6 +15,7 @@ jobs:
         with:
           aws-region: "us-east-1"
           push-to-ecr: true
+          repository: "my-repo"
         secrets:
           role-to-assume: "arn:aws:iam::912343663134:role/provideEcrAccess"
     
