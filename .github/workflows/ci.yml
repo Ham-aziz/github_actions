@@ -10,46 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       -
-        name: Checkout
-        uses: actions/checkout@v3
-      -
-        name: Docker meta
-        id: meta
-        uses: docker/metadata-action@v4
+        name: build and push
+        uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
         with:
-          images: azizhamza/githuba
-          tags : |
-            type=sha
-      -
-        name: Login to DockerHub
-        uses: docker/login-action@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_TOKEN }}
-      -
-        name: Build and push
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}
-
-      - name: build, push and Tag docker image with the SHA and develop if it is the master branche
-        if: ${{ github.ref_name == 'master' }}
-        uses: docker/build-push-action@v3
-        with:
-            context: .
-            push: true
-            tags: |
-              ${{ steps.meta.outputs.tags }}, azizhamza/githuba:develop
-
-
-      - name: build with args, push and Tag docker image with the SHA and latest if it is the production branche 
-        if: ${{ github.ref_name == 'production' }}
-        env:
-          REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-        uses: docker/build-push-action@v3
-        with:
-          context: .
-          push: true
-          tags: ${{ steps.meta.outputs.tags }}, azizhamza/githuba:latest
+          aws-region: us-east-1
+          push-to-ecr: true
+        secrets:
+          role-to-assume: ${{ secrets.role-to-assume }}
+    
