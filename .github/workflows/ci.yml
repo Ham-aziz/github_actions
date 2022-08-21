@@ -14,5 +14,5 @@ jobs:
         uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
         with:
           push-to-ghcr: true
-          repository: "gihtub_actions"
+          repository: "github_actions"
     
