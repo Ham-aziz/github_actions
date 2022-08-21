@@ -7,10 +7,7 @@ on:
 
 jobs:
   docker:
-    runs-on: ubuntu-latest
-    steps:
-      -
-        name: build and push
+
         uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
         with:
           aws-region: us-east-1
