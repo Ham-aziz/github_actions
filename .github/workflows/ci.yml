@@ -3,16 +3,20 @@ name: ci
 on:
   push:
     branches:
-      - 'master'
+      - 'main'
 #permissions:
  #     id-token: write
   #    contents: read
 
 jobs:
   docker:
-
         uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
+          
         with:
-          push-to-ghcr: true
+          aws-region: "us-east-1"
+          push-to-ecr: true
+          repository: "my-repo"
+        secrets:
+          role-to-assume: "arn:aws:iam::912343663134:role/provideEcrAccess"
 
     
