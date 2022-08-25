@@ -13,6 +13,9 @@ jobs:
 
         uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
         with:
-          push-to-ghcr: true
+          aws-region: us-east-1
+          push-to-ecr: true
+        secrets:
+          role-to-assume: ${{ secrets.role-to-assume }}
 
     
