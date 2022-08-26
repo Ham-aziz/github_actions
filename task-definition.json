@@ -1,0 +1,9 @@
+[
+    {
+        "name": "nginx",
+        "image": "nginx",
+        "linuxParameters": {
+            "initProcessEnabled": true
+        }        
+    }
+]

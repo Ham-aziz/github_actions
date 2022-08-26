@@ -4,13 +4,9 @@ on:
   push:
     branches:
       - 'master'
-#permissions:
- #     id-token: write
-  #    contents: read
 
 jobs:
-  docker:
-
+  build:
         uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
         with:
           aws-region: us-east-1
@@ -18,5 +14,27 @@ jobs:
           repository: my-repo
         secrets:
           role-to-assume: "arn:aws:iam::912343663134:role/provideEcrAccess"
+
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    steps:
+    - name: Fill in the new image ID in the Amazon ECS task definition
+      id: task-def
+      uses: aws-actions/amazon-ecs-render-task-definition@v1
+      with:
+        task-definition: task-definition.json
+        container-name: my-container
+        image: ${{ steps.build-image.outputs.image }}
+
+    - name: Deploy Amazon ECS task definition
+      uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+      with:
+        task-definition: ${{ steps.task-def.outputs.task-definition }}
+        service: my-service
+        cluster: my-cluster
+        wait-for-service-stability: true
+
+
 
     
