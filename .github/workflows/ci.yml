@@ -7,7 +7,7 @@ on:
 
 jobs:
   ci:
-    uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@task-2tt986n
+    uses: dohrniicloud/common-action-modules/.github/workflows/docker.yml@dd46f69145c7fb685b13e1b9b6e1daca6b65f1ca
     with:
       aws-region: us-east-1
       push-to-ecr: true
