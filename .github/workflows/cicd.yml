@@ -103,10 +103,10 @@ jobs:
       - name: check-output
         id: test
         run:
-          echo "::set-output name=registry::${{ steps.login-ecr.outputs.registry }}"
-          echo "::set-output name=tags::${{ steps.meta.outputs.tags }}"
-          
-          
+          echo "here we display the reistry {{ steps.login-ecr.outputs.registry }}"
+          echo "here the tags {{ steps.meta.outputs.tags }}"
+          echo "registry=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
+          echo "tags=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
   deploy:
 
     name: Deploy
@@ -119,7 +119,7 @@ jobs:
       with:
         task-definition: ${{env.ECS_TASK_DEFINITION}}
         container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ needs.build-push.outputs.registry }}/${{ env.ECR_REPOSITORY }}:${{ needs.build-push.outputs.tags }}
+        image: ${{ env.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.tags }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
