@@ -103,7 +103,8 @@ jobs:
       - name: check-output
         id: test
         run:
-          echo "::set-output name=registry::world"
+          echo "::set-output name=registry::${{ steps.login-ecr.outputs.registry }}"
+          echo "::set-output name=tags::${{ steps.meta.outputs.tags }}"
           
           
   deploy:
