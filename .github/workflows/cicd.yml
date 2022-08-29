@@ -51,8 +51,8 @@ jobs:
     name: Build and Push
     runs-on: ubuntu-latest
     outputs: 
-      registry: ${{ steps.test.outputs.registry }}
-      tags: ${{ steps.meta.outputs.tags }}
+      registry: ${{ env.registry }}
+      tags: ${{ env.tags }}
     needs: [create-release]
     steps:
       - name: Checkout Code
@@ -103,10 +103,9 @@ jobs:
       - name: check-output
         id: test
         run:
-          echo "here we display the reistry {{ steps.login-ecr.outputs.registry }}"
-          echo "here the tags {{ steps.meta.outputs.tags }}"
           echo "registry=${{ steps.login-ecr.outputs.registry }}" >> $GITHUB_ENV
           echo "tags=${{ steps.meta.outputs.tags }}" >> $GITHUB_ENV
+          
   deploy:
 
     name: Deploy
@@ -119,7 +118,7 @@ jobs:
       with:
         task-definition: ${{env.ECS_TASK_DEFINITION}}
         container-name: ${{ env.CONTAINER_NAME }}
-        image: ${{ env.registry }}/${{ env.ECR_REPOSITORY }}:${{ env.tags }}
+        image: ${{ needs.build-push.outputs.registry}}/${{ env.ECR_REPOSITORY }}:${{ needs.build-push.outputs.tags }}
 
     - name: Deploy Amazon ECS task definition
       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
