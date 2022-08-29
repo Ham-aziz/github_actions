@@ -51,7 +51,7 @@ jobs:
     name: Build and Push
     runs-on: ubuntu-latest
     outputs: 
-      registry: ${{ steps.login-ecr.outputs.registry }}
+      registry: ${{ steps.test.outputs.registry }}
       tags: ${{ steps.meta.outputs.tags }}
     needs: [create-release]
     steps:
@@ -100,7 +100,12 @@ jobs:
 
           cache-from: type=gha
           cache-to: type=gha,mode=max
-  
+      - name: check-output
+        id: test
+        run:
+          echo "::set-output name=registry::world"
+          
+          
   deploy:
 
     name: Deploy
