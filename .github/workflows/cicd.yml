@@ -50,7 +50,7 @@ jobs:
     name: Build and Push
     runs-on: ubuntu-latest
     outputs:
-      image: ${{ steps.meta.outputs.tags }}
+      image: ${{ steps.out.outputs.image }}
     needs: [create-release]
     steps:
       - name: Checkout Code
@@ -97,6 +97,10 @@ jobs:
 
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: set output
+      - id: out
+        run: echo "::set-output name=image::${{ steps.meta.outputs.tags }}"
   deploy:
     strategy:
       max-parallel: 4 
