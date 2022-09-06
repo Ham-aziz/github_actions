@@ -99,8 +99,8 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: upload the image id (didnt work with output)
-      - run: echo ${{ steps.meta.outputs.tags }} > imageUri.txt
-      - uses: actions/upload-artifact@v3
+        run: echo ${{ steps.meta.outputs.tags }} > imageUri.txt
+        uses: actions/upload-artifact@v3
         with:
           name: my-image
           path: imageUri.txt
