@@ -3,7 +3,7 @@ name: Tag, Build, Push Docker Image to ECR or GHCR or both
 on:
   push:
     branches:
-    - master
+    - withMatrix
 
 
 permissions:
