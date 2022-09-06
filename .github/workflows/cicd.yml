@@ -100,7 +100,7 @@ jobs:
 
       - name: set output
         id: out
-        run: echo "::set-output name=image::${{ steps.meta.outputs.tags }}"
+        run: echo "::set-output name=image::$(echo -n '${{ steps.meta.outputs.tags }}' | base64)"
   deploy:
     strategy:
       max-parallel: 4 
