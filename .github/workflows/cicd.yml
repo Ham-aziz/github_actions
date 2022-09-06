@@ -98,12 +98,12 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
-      - name: set output
-        id: out
-        run: echo "::set-output name=image::$(echo -n '${{ steps.meta.outputs.tags }}' | base64)"
-
-      - name: display output
-        run: echo "displaying the image  ${{ steps.out.outputs.image }}"
+      - name: upload the image id (didnt work with output)
+      - run: echo ${{ steps.meta.outputs.tags }} > imageUri.txt
+      - uses: actions/upload-artifact@v3
+        with:
+          name: my-image
+          path: imageUri.txt
   deploy:
     strategy:
       max-parallel: 4 
@@ -130,13 +130,23 @@ jobs:
           aws ecs describe-task-definition --task-definition ${{ matrix.ECS_TASK_DEFINITION }} \
           --query taskDefinition > task-definition.json
 
+      - name: get the image id from the build job
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v3
+        with:
+          name: my-image
+
+      - name: set output
+        id: out
+        run: echo "::set-output name=image::$(echo imageUri.txt)"
+
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: task-definition.json # this is the name of the file containing the task definition download from the previous step
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{ needs.build-push.outputs.image }}
+          image: ${{ steps.out.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
