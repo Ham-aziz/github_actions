@@ -132,7 +132,7 @@ jobs:
           --query taskDefinition > task-definition.json
 
       - name: get the image id from the build job
-      - uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v3
         with:
           name: my-image
 
