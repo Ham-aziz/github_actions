@@ -14,9 +14,9 @@ permissions:
 env:
   AWS_REGION: us-east-1                   # set this to your preferred AWS region, e.g. us-west-1
   ECR_REPOSITORY: my-repo           # set this to your Amazon ECR repository name
-  ECS_SERVICE: my-service                 # set this to your Amazon ECS service name
+  # ECS_SERVICE: [my-service]                # set this to your Amazon ECS service name
   ECS_CLUSTER: niagara                 # set this to your Amazon ECS cluster name
-  ECS_TASK_DEFINITION: "task-definition.json"  # set this to the path to your Amazon ECS task definition
+  # ECS_TASK_DEFINITION: [task-definition.json]  # set this to the path to your Amazon ECS task definition
                                                # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: my-repo           # set this to the name of the container in the containerDefinitions section of your task definition
   ROLE_TO_ASSUME: "arn:aws:iam::912343663134:role/provideEcrAccess"                                           
@@ -48,6 +48,11 @@ jobs:
           body: ${{ steps.changelog.outputs.clean_changelog }}
 
   build-push-deploy:
+    strategy:
+      max-parallel: 4 
+      matrix:
+        ECS_SERVICE: [my-service]
+        ECS_TASK_DEFINITION: [demodeploy]
     name: Build and Push
     runs-on: ubuntu-latest
     needs: [create-release]
@@ -100,14 +105,14 @@ jobs:
           
       - name: Download task definition
         run: |
-          aws ecs describe-task-definition --task-definition demodeploy \
+          aws ecs describe-task-definition --task-definition ${{ matrix.ECS_TASK_DEFINITION }} \
           --query taskDefinition > task-definition.json
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: ${{env.ECS_TASK_DEFINITION}}
+          task-definition: task-definition.json # this is the name of the file containing the task definition download from the previous step
           container-name: ${{ env.CONTAINER_NAME }}
           image: ${{ steps.meta.outputs.tags }}
 
@@ -115,7 +120,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: ${{ env.ECS_SERVICE }}
+          service: ${{ matrix.ECS_SERVICE }}
           cluster: ${{ env.ECS_CLUSTER }}
           wait-for-service-stability: true
           force-new-deployment: true
