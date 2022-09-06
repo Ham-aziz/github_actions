@@ -67,7 +67,6 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-
       - name: prepare tags
         id: meta
         uses: docker/metadata-action@v4
@@ -130,7 +129,7 @@ jobs:
         with:
           task-definition: task-definition.json # this is the name of the file containing the task definition download from the previous step
           container-name: ${{ env.CONTAINER_NAME }}
-          image: ${{needs.build-push.outputs.image}}
+          image: ${{ needs.build-push.outputs.image }}
 
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
