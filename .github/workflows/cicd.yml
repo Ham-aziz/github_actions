@@ -138,7 +138,7 @@ jobs:
 
       - name: set output
         id: out
-        run: echo "::set-output name=image::$(echo imageUri.txt)"
+        run: echo "::set-output name=image::$(cat imageUri.txt)"
 
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
