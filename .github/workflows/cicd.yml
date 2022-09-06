@@ -99,7 +99,7 @@ jobs:
           cache-to: type=gha,mode=max
 
       - name: set output
-      - id: out
+        id: out
         run: echo "::set-output name=image::${{ steps.meta.outputs.tags }}"
   deploy:
     strategy:
