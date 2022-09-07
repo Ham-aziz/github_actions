@@ -52,9 +52,9 @@ jobs:
       matrix:
         include:
         # define the pair of task/service that will run together
-          - ECS_TASK: demodeploy
+          - ECS_TASK_DEFINITION: demodeploy
             ECS_SERVICE: my-service
-          - ECS_TASK: demodeploy
+          - ECS_TASK_DEFINITION: demodeploy
             ECS_SERVICE: my-service2
             
     name: Build and Push
