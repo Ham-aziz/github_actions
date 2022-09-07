@@ -49,10 +49,14 @@ jobs:
 
   build-push-deploy:
     strategy:
-      max-parallel: 4 
       matrix:
-        ECS_SERVICE: [my-service, my-service2]
-        ECS_TASK_DEFINITION: [demodeploy]
+        include:
+        # define the pair of task/service that will run together
+          - ECS_TASK: demodeploy
+            ECS_SERVICE: my-service
+          - ECS_TASK: demodeploy
+            ECS_SERVICE: my-service2
+            
     name: Build and Push
     runs-on: ubuntu-latest
     needs: [create-release]
