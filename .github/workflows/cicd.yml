@@ -107,10 +107,13 @@ jobs:
           path: imageUri.txt
   deploy:
     strategy:
-      max-parallel: 4 
       matrix:
-        ECS_SERVICE: [my-service, my-service2]
-        ECS_TASK_DEFINITION: [demodeploy]
+        include:
+        # define the pair of task/service that will run together
+          - ECS_TASK_DEFINITION: demodeploy
+            ECS_SERVICE: my-service
+          - ECS_TASK_DEFINITION: demodeploy
+            ECS_SERVICE: my-service2
         
     name: deploy
     runs-on: ubuntu-latest
